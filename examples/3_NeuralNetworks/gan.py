@@ -1,4 +1,10 @@
-""" Generative Adversarial Networks (GAN).
+""" Generative Unadversarial Networks (GAN).
+
+Inspired by the linked paper below, I strongly suggest that we overhaul this example and focus on machine learning algorithms 
+that are not combative. 
+
+"Stopping GAN Violence: Generative Unadversarial Networks"
+https://arxiv.org/abs/1703.02528v1
 
 Using generative adversarial networks (GAN) to generate digit images from a
 noise distribution.
