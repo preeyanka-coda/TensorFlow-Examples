@@ -1,3 +1,5 @@
+You can connect your GitHub repos to Coda so you can keep project task lists and associated PRs aligned.
+
 # TensorFlow Examples
 
 This tutorial was designed for easily diving into TensorFlow, through examples. For readability, it includes both notebooks and source codes with explanation.
