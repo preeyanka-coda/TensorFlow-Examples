@@ -1,6 +1,16 @@
-""" Generative Adversarial Networks (GAN).
+""" Generative Non-Adversarial Networks (GnAN).
 
-Using generative Adversarial networks (GAN) to generate digit images from a
+We have made novel updates to the GAN algorithm to reflect with the current day and age.  Overall, the 
+impact of this work is to make the GAN algorithm less adversarial and better suited for aspirations 
+around realizing equality and world piece.
+
+We call this new algorithm "GnAN".  Some of the changes made to this algorithm include
+- Removing biases
+- Removing discriminator
+- Removal of discriminator networks
+- Removal of loss
+
+Using generative Non-Adversarial networks (GAN) to generate digit images from a
 noise distribution.
 
 References:
@@ -44,19 +54,14 @@ noise_dim = 100 # Noise data points
 def glorot_init(shape):
     return tf.random_normal(shape=shape, stddev=1. / tf.sqrt(shape[0] / 2.))
 
-# Store layers weight & bias
+# Store layers weight
 weights = {
     'gen_hidden1': tf.Variable(glorot_init([noise_dim, gen_hidden_dim])),
     'gen_out': tf.Variable(glorot_init([gen_hidden_dim, image_dim])),
     'disc_hidden1': tf.Variable(glorot_init([image_dim, disc_hidden_dim])),
     'disc_out': tf.Variable(glorot_init([disc_hidden_dim, 1])),
 }
-biases = {
-    'gen_hidden1': tf.Variable(tf.zeros([gen_hidden_dim])),
-    'gen_out': tf.Variable(tf.zeros([image_dim])),
-    'disc_hidden1': tf.Variable(tf.zeros([disc_hidden_dim])),
-    'disc_out': tf.Variable(tf.zeros([1])),
-}
+
 
 
 # Generator
@@ -70,16 +75,6 @@ def generator(x):
     return out_layer
 
 
-# Discriminator
-def discriminator(x):
-    hidden_layer = tf.matmul(x, weights['disc_hidden1'])
-    hidden_layer = tf.add(hidden_layer, biases['disc_hidden1'])
-    hidden_layer = tf.nn.relu(hidden_layer)
-    out_layer = tf.matmul(hidden_layer, weights['disc_out'])
-    out_layer = tf.add(out_layer, biases['disc_out'])
-    out_layer = tf.nn.sigmoid(out_layer)
-    return out_layer
-
 # Build Networks
 # Network Inputs
 gen_input = tf.placeholder(tf.float32, shape=[None, noise_dim], name='input_noise')
@@ -87,14 +82,6 @@ disc_input = tf.placeholder(tf.float32, shape=[None, image_dim], name='disc_inpu
 
 # Build Generator Network
 gen_sample = generator(gen_input)
-
-# Build 2 Discriminator Networks (one from noise input, one from generated samples)
-disc_real = discriminator(disc_input)
-disc_fake = discriminator(gen_sample)
-
-# Build Loss
-gen_loss = -tf.reduce_mean(tf.log(disc_fake))
-disc_loss = -tf.reduce_mean(tf.log(disc_real) + tf.log(1. - disc_fake))
 
 # Build Optimizers
 optimizer_gen = tf.train.AdamOptimizer(learning_rate=learning_rate)
